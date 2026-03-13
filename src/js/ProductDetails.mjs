@@ -24,6 +24,9 @@ export default class ProductDetails {
     const cartItems = JSON.parse(localStorage.getItem('so-cart')) || [];
     cartItems.push(this.product);
     setLocalStorage('so-cart', cartItems);
+    
+    // Show alert notification
+    alert(`${this.product.NameWithoutBrand || this.product.Name} has been added to your cart!`);
   }
 
   renderProductDetails() {
