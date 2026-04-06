@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ScholarTrack</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>ScholarTrack Dashboard</h1>
+
+  <!-- Form -->
+  <form id="form">
+    <input type="text" id="input" placeholder="Enter student name" required>
+    <button type="submit">Add Student</button>
+  </form>
+
+  <!-- Buttons -->
+  <button id="btn">Click Me</button>
+  <button onclick="convertFees(100)">Convert Fees ($100)</button>
+
+  <!-- API Output -->
+  <p id="feesOutput"></p>
+
+  <!-- Students Section -->
+  <h2>Students</h2>
+  <div id="studentsContainer"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
