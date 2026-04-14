@@ -2,30 +2,69 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ScholarTrack - Find scholarships and manage student progress">
   <title>ScholarTrack</title>
+
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-  <h1>ScholarTrack Dashboard</h1>
+  <!-- ================= HEADER ================= -->
+  <header>
+    <h1>🎓 ScholarTrack Dashboard</h1>
+  </header>
 
-  <!-- Form -->
-  <form id="form">
-    <input type="text" id="input" placeholder="Enter student name" required>
-    <button type="submit">Add Student</button>
-  </form>
+  <!-- ================= SCHOLARSHIP SECTION ================= -->
+  <section>
+    <h2>Find Scholarships</h2>
 
-  <!-- Buttons -->
-  <button id="btn">Click Me</button>
-  <button onclick="convertFees(100)">Convert Fees ($100)</button>
+    <input type="text" id="search" placeholder="Search scholarships...">
+    <button onclick="loadScholarships()">Load Scholarships</button>
 
-  <!-- API Output -->
-  <p id="feesOutput"></p>
+    <div id="scholarshipContainer"></div>
+  </section>
 
-  <!-- Students Section -->
-  <h2>Students</h2>
-  <div id="studentsContainer"></div>
+  <!-- ================= STUDENT FORM ================= -->
+  <section>
+    <h2>Add Student</h2>
 
+    <form id="form">
+      <input 
+        type="text" 
+        id="input" 
+        placeholder="Enter student name" 
+        required
+      >
+      <button type="submit">Add Student</button>
+    </form>
+  </section>
+
+  <!-- ================= ACTIONS ================= -->
+  <section>
+    <h2>Actions</h2>
+
+    <button id="btn">Click Me</button>
+    <button onclick="convertFees(100)">Convert Fees ($100)</button>
+
+    <p id="feesOutput"></p>
+  </section>
+
+  <!-- ================= STUDENTS ================= -->
+  <section>
+    <h2>Students</h2>
+    <div id="studentsContainer"></div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>
+    <p>© 2026 ScholarTrack | Built with HTML, CSS & JavaScript</p>
+  </footer>
+
+  <!-- ================= SCRIPT ================= -->
   <script src="script.js"></script>
+
 </body>
 </html>
