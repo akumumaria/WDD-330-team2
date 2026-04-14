@@ -1,6 +1,6 @@
 // === External Third-Party API Integration (Fake Store API) ===
 async function getProducts() {
-  const productListElement = document.getElementById('products');   // Common ID in SleepOutside
+  const productListElement = document.getElementById('products');   // Common ID in ScholarTrack
 
   try {
     const res = await fetch('https://fakestoreapi.com/products?limit=12');
