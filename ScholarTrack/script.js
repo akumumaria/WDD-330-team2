@@ -1,64 +1,15 @@
-// ================= GLOBAL DATA =================
 let students = [];
+let scholarships = [];
 
-// ================= SCHOLARSHIPS DATA =================
-const scholarships = [
-  {
-    title: "Mastercard Foundation Scholarship",
-    country: "Uganda",
-    amount: 10000,
-    deadline: "2026-06-01",
-    field: "Computer Science",
-    level: "Undergraduate",
-    university: "Makerere University",
-    eligibility: "African students",
-    description: "Full scholarship"
-  },
-  {
-    title: "DAAD Scholarship",
-    country: "Germany",
-    amount: 15000,
-    deadline: "2026-07-01",
-    field: "Engineering",
-    level: "Masters",
-    university: "TU Berlin",
-    eligibility: "International students",
-    description: "Fully funded"
-  },
-  {
-    title: "Chevening Scholarship",
-    country: "United Kingdom",
-    amount: 20000,
-    deadline: "2026-05-01",
-    field: "Any Field",
-    level: "Masters",
-    university: "Various UK Universities",
-    eligibility: "Global students",
-    description: "Fully funded"
-  },
-  {
-    title: "Fulbright Scholarship",
-    country: "United States",
-    amount: 25000,
-    deadline: "2026-08-01",
-    field: "Various Fields",
-    level: "Masters/PhD",
-    university: "US Universities",
-    eligibility: "International students",
-    description: "Covers tuition and living costs"
-  }
-];
-
-// ================= INIT =================
+// ===== INIT =====
 window.onload = function () {
-  console.log("App Loaded ✅");
-
   loadStudents();
-  loadScholarships();   // 🔥 FORCE DISPLAY
-  loadCountries();      // second API
+  fetchScholarships();
+  fetchCountries();
+  setupEvents();
 };
 
-// ================= STUDENTS =================
+// ===== STUDENTS =====
 function loadStudents() {
   const data = JSON.parse(localStorage.getItem("students"));
   if (data) {
@@ -74,16 +25,15 @@ document.getElementById("form").addEventListener("submit", function (e) {
 
   const student = {
     id: Date.now(),
-    name: name,
+    name,
     age: Math.floor(Math.random() * 10) + 18,
-    course: "Computer Science",
     progress: Math.floor(Math.random() * 100)
   };
 
   students.push(student);
   localStorage.setItem("students", JSON.stringify(students));
-
   displayStudents();
+
   document.getElementById("input").value = "";
 });
 
@@ -91,110 +41,147 @@ function displayStudents() {
   const container = document.getElementById("studentsContainer");
   container.innerHTML = "";
 
-  students.forEach(student => {
+  students.forEach(s => {
     const div = document.createElement("div");
     div.className = "card";
 
     div.innerHTML = `
-      <h3>${student.name}</h3>
-      <p>Age: ${student.age}</p>
-      <p>Course: ${student.course}</p>
-      <p>Progress: ${student.progress}%</p>
-      <button onclick="deleteStudent(${student.id})">Delete</button>
-      <button onclick="editStudent(${student.id})">Edit</button>
-    `;
+  <h3>${s.name}</h3>
+  <p>Age: ${s.age}</p>
+  <p>Progress: ${s.progress}%</p>
 
+  <button onclick="deleteStudent(${s.id})">Delete</button>
+  <button onclick="editStudent(${s.id})">Edit</button>
+`;
     container.appendChild(div);
   });
 }
-
 function deleteStudent(id) {
   students = students.filter(s => s.id !== id);
   localStorage.setItem("students", JSON.stringify(students));
   displayStudents();
 }
-
 function editStudent(id) {
   const student = students.find(s => s.id === id);
-  const newName = prompt("Edit name:", student.name);
 
-  if (newName) {
+  const newName = prompt("Enter new name:", student.name);
+
+  if (newName && newName.trim() !== "") {
     student.name = newName;
+
     localStorage.setItem("students", JSON.stringify(students));
     displayStudents();
   }
 }
+// ===== SCHOLARSHIPS =====
+async function fetchScholarships() {
+  try {
+    const res = await fetch("https://universities.hipolabs.com/search?country=United States");
+    const data = await res.json();
 
-// ================= SCHOLARSHIPS =================
-function loadScholarships() {
-  displayScholarships(scholarships);
+    if (data.length === 0) throw new Error("No data");
+
+    scholarships = data.slice(0, 8).map(u => ({
+      title: u.name + " Scholarship",
+      country: u.country,
+      amount: Math.floor(Math.random() * 20000) + 5000
+    }));
+
+  } catch (error) {
+    console.log("Using fallback scholarships");
+
+    // 🔥 STRONG FALLBACK (VERY IMPORTANT)
+    scholarships = [
+      { title: "Mastercard Foundation Scholarship", country: "Uganda", amount: 10000 },
+      { title: "DAAD Scholarship", country: "Germany", amount: 15000 },
+      { title: "Chevening Scholarship", country: "United Kingdom", amount: 20000 },
+      { title: "Fulbright Scholarship", country: "United States", amount: 25000 },
+      { title: "Erasmus Scholarship", country: "France", amount: 18000 },
+      { title: "Australia Awards", country: "Australia", amount: 22000 }
+    ];
+  }
+
+  loadScholarships();
 }
 
-function displayScholarships(data) {
+function loadScholarships(list = scholarships) {
   const container = document.getElementById("scholarshipContainer");
   container.innerHTML = "";
 
-  data.forEach(sch => {
+  list.forEach((s, i) => {
     const div = document.createElement("div");
     div.className = "card";
 
     div.innerHTML = `
-      <h3>${sch.title}</h3>
-      <p><strong>Country:</strong> ${sch.country}</p>
-      <p><strong>Field:</strong> ${sch.field}</p>
-      <p><strong>Level:</strong> ${sch.level}</p>
-      <p><strong>Deadline:</strong> ${sch.deadline}</p>
-      <p><strong>Amount:</strong> $${sch.amount}</p>
+      <h3>${s.title}</h3>
+      <p>${s.country}</p>
+      <p>$${s.amount}</p>
+      <button onclick="showDetails(${i})">Details</button>
     `;
 
     container.appendChild(div);
   });
 }
 
-// ================= SEARCH =================
-const searchInput = document.getElementById("search");
-
-if (searchInput) {
-  searchInput.addEventListener("input", function () {
-    const value = this.value.toLowerCase();
-
-    const filtered = scholarships.filter(s =>
-      s.title.toLowerCase().includes(value)
-    );
-
-    displayScholarships(filtered);
-  });
-}
-
-// ================= EVENTS =================
-document.getElementById("btn").addEventListener("click", function () {
-  alert("Button clicked!");
-});
-
-// ================= API 1 =================
-async function convertFees(amountUSD) {
-  try {
-    const res = await fetch("https://api.exchangerate-api.com/v4/latest/USD");
-    const data = await res.json();
-
-    const rate = data.rates.UGX;
-    const ugx = amountUSD * rate;
-
-    document.getElementById("feesOutput").innerText =
-      "Fees in UGX: " + ugx.toFixed(2);
-  } catch (error) {
-    document.getElementById("feesOutput").innerText = "API Error";
-  }
-}
-
-// ================= API 2 =================
-async function loadCountries() {
+// ===== COUNTRIES =====
+async function fetchCountries() {
   try {
     const res = await fetch("https://restcountries.com/v3.1/all");
     const data = await res.json();
 
-    console.log("Countries loaded:", data.length);
+    const container = document.getElementById("countriesContainer");
+    container.innerHTML = "";
+
+    data.slice(0, 5).forEach(c => {
+      const div = document.createElement("div");
+      div.className = "card";
+      div.innerHTML = `<h4>${c.name.common}</h4>`;
+      container.appendChild(div);
+    });
+
   } catch (error) {
-    console.log("Countries API error", error);
+    console.log(error);
   }
+}
+
+// ===== EVENTS =====
+function setupEvents() {
+  document.getElementById("search").addEventListener("input", e => {
+    const val = e.target.value.toLowerCase();
+
+    const filtered = scholarships.filter(s =>
+      s.title.toLowerCase().includes(val) ||
+      s.country.toLowerCase().includes(val)
+    );
+
+    loadScholarships(filtered);
+  });
+
+  document.getElementById("sortAmount").addEventListener("click", () => {
+    const sorted = [...scholarships].sort((a, b) => b.amount - a.amount);
+    loadScholarships(sorted);
+  });
+
+  document.getElementById("btn").addEventListener("click", () => {
+    alert("Button clicked!");
+  });
+}
+
+// ===== MODAL SIMPLE =====
+function showDetails(i) {
+  alert(
+    scholarships[i].title + " - " +
+    scholarships[i].country + " ($" + scholarships[i].amount + ")"
+  );
+}
+
+// ===== EXCHANGE =====
+async function convertFees(amount) {
+  const res = await fetch("https://api.exchangerate-api.com/v4/latest/USD");
+  const data = await res.json();
+
+  const ugx = amount * data.rates.UGX;
+
+  document.getElementById("feesOutput").innerText =
+    `100 USD = ${ugx.toFixed(2)} UGX`;
 }

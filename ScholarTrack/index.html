@@ -21,10 +21,15 @@
   <section>
     <h2>Find Scholarships</h2>
 
-    <input type="text" id="search" placeholder="Search scholarships...">
+    <input type="text" id="search" placeholder="Search by country...">
+    <!-- Datalist for country autocomplete will be injected by JS -->
+    <select id="countryDropdown"><option value="">All Countries</option></select>
+    <button id="sortAmount">Sort by Amount</button>
     <button onclick="loadScholarships()">Load Scholarships</button>
 
     <div id="scholarshipContainer"></div>
+    <!-- Chart for scholarship amounts -->
+    <canvas id="scholarshipChart" width="400" height="180" style="margin-top:30px;"></canvas>
   </section>
 
   <!-- ================= STUDENT FORM ================= -->
@@ -45,7 +50,8 @@
   <!-- ================= ACTIONS ================= -->
   <section>
     <h2>Actions</h2>
-
+<h2>Countries</h2>
+<div id="countriesContainer"></div>
     <button id="btn">Click Me</button>
     <button onclick="convertFees(100)">Convert Fees ($100)</button>
 
@@ -63,7 +69,17 @@
     <p>© 2026 ScholarTrack | Built with HTML, CSS & JavaScript</p>
   </footer>
 
-  <!-- ================= SCRIPT ================= -->
+
+  <!-- ================= MODAL ================= -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="modalClose">&times;</span>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 
 </body>
